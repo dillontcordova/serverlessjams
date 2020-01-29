@@ -2,14 +2,14 @@ service: serverlessjams
 app: myapp
 org: mailthatiwontuse
 
-
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-west-2
-  # stage: dev
+  stage: dev
   environment:
-    DYNAMODB_TABLE: serverlessjams-voteCounts
+    DYNAMODB_TABLE: ${self:custom.tableName}
+    AWS_REGION_WSD: ${self:provider.region}
 
   iamRoleStatements:
    - Effect: "Allow"
@@ -17,7 +17,8 @@ provider:
        - dynamodb:Scan
        - dynamodb:UpdateItem
        - dynamodb:PutItem
-     Resource: "arn:aws:dynamodb:us-west-2:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+     Resource: 
+      - { "Fn::GetAtt": ["songsTable", "Arn" ] }
 
 functions:
   recordSongVote:
@@ -43,6 +44,7 @@ plugins:
   - serverless-finch
 
 custom:
+  tableName: serverlessjams-voteCounts
   client:
     bucketName: spareflame.com
     distributionFolder: frontend
