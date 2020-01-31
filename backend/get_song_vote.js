@@ -16,22 +16,17 @@ module.exports.handler = async (event) => {
 
   const params = {
     TableName       : config.dynamo.tableVoteCount,
-    UpdateExpression: "ADD votes :inc",
-    ReturnValues    : "UPDATED_NEW",
     Key             : {
       "songName": { S: song_name },
-    },
-    ExpressionAttributeValues: {
-      ":inc": { N: "1" },
     }
   };
 
-  const [err, data] = await ing( service.dynamo.updateItem(params).promise() );
-  const votes       = drilldown(data, 'Attributes.votes'.split('.'));
+  const [err, data] = await ing( service.dynamo.getItem(params).promise() );
+  const votes       = drilldown(data, 'Item.votes'.split('.'));
 
   if( err || !votes ){
     result.status = err.status || 404;
-    result.body   = JSON.stringify(err || '[data.Attributes.votes] was not found');
+    result.body   = JSON.stringify(err || '[data.Item.votes] was not found');
     return result;
   }
 

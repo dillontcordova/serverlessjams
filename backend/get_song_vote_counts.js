@@ -7,7 +7,6 @@ const drilldown = require('../lib/drilldown');
 module.exports.handler = async (event) => {
   
   const service   = services();
-  const song_name = event.body.songName;
   const result    = {
     statusCode: 200,
     headers   : {'Access-Control-Allow-Origin': '*'},
@@ -16,26 +15,26 @@ module.exports.handler = async (event) => {
 
   const params = {
     TableName       : config.dynamo.tableVoteCount,
-    UpdateExpression: "ADD votes :inc",
-    ReturnValues    : "UPDATED_NEW",
-    Key             : {
-      "songName": { S: song_name },
-    },
-    ExpressionAttributeValues: {
-      ":inc": { N: "1" },
-    }
   };
 
-  const [err, data] = await ing( service.dynamo.updateItem(params).promise() );
-  const votes       = drilldown(data, 'Attributes.votes'.split('.'));
+  const [err, data] = await ing( service.dynamo.scan(params).promise() );
+  const records     = drilldown(data, 'Items'.split('.'));
 
-  if( err || !votes ){
+  if( err || !records ){
     result.status = err.status || 404;
-    result.body   = JSON.stringify(err || '[data.Attributes.votes] was not found');
+    result.body   = JSON.stringify(err || '[data.Items] was not found');
     return result;
   }
 
-  result.body = JSON.stringify( votes );
+  let songVotes = [];
+  for( let record of records ){
+    songVotes.push({
+        songName: record.songName,
+        votes: record.votes
+    });
+  }
+
+  result.body = JSON.stringify( songVotes );
 
   return result;
 };
