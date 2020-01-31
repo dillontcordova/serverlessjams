@@ -29,8 +29,8 @@ module.exports.handler = async (event) => {
   let songVotes = [];
   for( let record of records ){
     songVotes.push({
-        songName: record.songName,
-        votes: record.votes
+        songName: record.songName.S,
+        votes: record.votes.N
     });
   }
 

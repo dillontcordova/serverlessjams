@@ -4,8 +4,8 @@ $(document).ready(function(){
   document.getElementsByClassName("ui red button")[0].addEventListener("click", recordVote);
 });
 
-var vote_endpoint = "https://EXAMPLE_REPLACE_ME.execute-api.us-east-1.amazonaws.com/dev/song/vote"
-var get_votes_endpoint = "https://EXAMPLE_REPLACE_ME.execute-api.us-east-1.amazonaws.com/dev/votes"
+var vote_endpoint = "https://vedj81j729.execute-api.us-west-2.amazonaws.com/dev/song/vote"
+var get_votes_endpoint = "https://vedj81j729.execute-api.us-west-2.amazonaws.com/dev/song/votes"
 
 function setVotes(songName, voteCount) {
   // Get div containing vote count and set the new voteCount
@@ -15,7 +15,9 @@ function setVotes(songName, voteCount) {
 async function refreshVoteCounts() {
   // Get the vote counts
   const response = await fetch(get_votes_endpoint);
+  
   const songs = await response.json();
+  console.log(songs);
   // Iterate over all three songs and update the divs
   var i;
   for (i = 0; i < songs.length; i++){
@@ -31,8 +33,8 @@ async function refreshVoteCounts() {
 async function voteForSong(songName) {
   const response = await fetch(vote_endpoint, {
     method: "POST",
-    mode: 'cors',
-    headers: {'Content-Type': 'application/json'},
+    // mode: 'cors',
+    headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'},
     body: JSON.stringify({"songName": songName})
   })
   const result_json = await response.json()

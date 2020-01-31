@@ -10,7 +10,7 @@ module.exports.handler = async (event) => {
   const song_name = event.body.songName;
   const result    = {
     statusCode: 200,
-    headers   : {'Access-Control-Allow-Origin': '*'},
+    headers   : {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
     body      : null
   };
 
