@@ -4,8 +4,8 @@ $(document).ready(function(){
   document.getElementsByClassName("ui red button")[0].addEventListener("click", recordVote);
 });
 
-var vote_endpoint = "https://vedj81j729.execute-api.us-west-2.amazonaws.com/dev/song/vote"
-var get_votes_endpoint = "https://vedj81j729.execute-api.us-west-2.amazonaws.com/dev/song/votes"
+var vote_endpoint = "https://ytr6ry0tq8.execute-api.us-west-2.amazonaws.com/dev/song/vote"
+var get_votes_endpoint = "https://ytr6ry0tq8.execute-api.us-west-2.amazonaws.com/dev/song/votes"
 
 function setVotes(songName, voteCount) {
   // Get div containing vote count and set the new voteCount
@@ -33,8 +33,8 @@ async function refreshVoteCounts() {
 async function voteForSong(songName) {
   const response = await fetch(vote_endpoint, {
     method: "POST",
-    // mode: 'cors',
-    headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'},
+    mode: 'cors',
+    headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({"songName": songName})
   })
   const result_json = await response.json()

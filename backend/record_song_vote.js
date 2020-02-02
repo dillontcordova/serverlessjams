@@ -5,13 +5,20 @@ const ing       = require('../lib/ing');
 const drilldown = require('../lib/drilldown');
 
 module.exports.handler = async (event) => {
+  console.log(JSON.stringify(event));
   
+  if( event.body && typeof event.body === 'string' ){
+    event.body = JSON.parse(event.body);
+  }
+
   const service   = services();
   const song_name = event.body.songName;
   const result    = {
     statusCode: 200,
-    headers   : {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-    body      : null
+    body      : null,
+    headers   : {
+      'Access-Control-Allow-Origin': '*',
+    },
   };
 
   const params = {
@@ -35,7 +42,7 @@ module.exports.handler = async (event) => {
     return result;
   }
 
-  result.body = JSON.stringify( votes );
+  result.body = JSON.stringify( votes.N );
 
   return result;
 };
